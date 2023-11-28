@@ -4,9 +4,9 @@ import { notNull } from './utils/typeguards';
 
 export const IntegrationApp: FC = () => {
   const config = useConfig();
-  const [isDisabled, setIsDisabled] = useState(config.initialIsDisabled);
+  const [, setIsDisabled] = useState(config.initialIsDisabled);
   const [elementValue, setElementValue] = useState<string | undefined>(config.initialValue);
-  const [watchedElementsValues, setWatchedElementsValues] = useState(Object.fromEntries(config.elementCodenamesToInclude.map(c => [c, ""])));
+  const [, setWatchedElementsValues] = useState(Object.fromEntries(config.elementCodenamesToInclude.map(c => [c, ""])));
 
   const updateWatchedElementsValue = useCallback((codenames: ReadonlyArray<string>) => {
     Promise.all(codenames.map(getElementValuePromise))
@@ -21,7 +21,7 @@ export const IntegrationApp: FC = () => {
       }
     })
       .then(res => setElementValue(res.result.value ?? res.result.error))
-  }, []);
+  }, [config.elementCodenamesToInclude, config.instruction]);
 
   useEffect(() => {
     CustomElement.setHeight(500);
