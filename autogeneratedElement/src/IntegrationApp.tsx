@@ -1,17 +1,16 @@
-import { FC, useCallback, useEffect, useState } from 'react';
+import { FC, useEffect, useState } from 'react';
 import { useConfig } from './ConfigContext';
-import { notNull } from './utils/typeguards';
 
 export const IntegrationApp: FC = () => {
   const config = useConfig();
   const [, setIsDisabled] = useState(config.initialIsDisabled);
   const [elementValue, setElementValue] = useState<string | undefined>(config.initialValue);
-  const [, setWatchedElementsValues] = useState(Object.fromEntries(config.config.elementCodenamesToInclude.map(c => [c, ""])));
+  const [watchedUpdateIndex, setWatchedUpdateIndex] = useState(0);
 
-  const updateWatchedElementsValue = useCallback((codenames: ReadonlyArray<string>) => {
-    Promise.all(codenames.map(getElementValuePromise))
-      .then(newValues => setWatchedElementsValues(prev => ({ ...prev, ...Object.fromEntries(newValues.map(o => o.value === null ? null : [o.codename, o.value]).filter(notNull)) })));
-  }, []);
+  // const updateWatchedElementsValue = useCallback((codenames: ReadonlyArray<string>) => {
+  //   Promise.all(codenames.map(getElementValuePromise))
+  //     .then(newValues => setWatchedElementsValues(prev => ({ ...prev, ...Object.fromEntries(newValues.map(o => o.value === null ? null : [o.codename, o.value]).filter(notNull)) })));
+  // }, []);
 
   useEffect(() => {
     CustomElement.ai(
@@ -23,7 +22,7 @@ export const IntegrationApp: FC = () => {
       {
         includeElementCodenames: config.config.elementCodenamesToInclude,
       });
-  }, [config.config.elementCodenamesToInclude, config.config.instruction]);
+  }, [config.config.elementCodenamesToInclude, config.config.instruction, watchedUpdateIndex]);
 
   useEffect(() => {
     CustomElement.setHeight(500);
@@ -37,8 +36,8 @@ export const IntegrationApp: FC = () => {
     if (!config) {
       return;
     }
-    CustomElement.observeElementChanges(config.config.elementCodenamesToInclude, updateWatchedElementsValue);
-  }, [config, updateWatchedElementsValue]);
+    CustomElement.observeElementChanges(config.config.elementCodenamesToInclude, () => setWatchedUpdateIndex(prev => prev + 1));
+  }, [config]);
 
   // const updateValue = (newValue: string) => {
   //   CustomElement.setValue(newValue);
@@ -63,7 +62,7 @@ export const IntegrationApp: FC = () => {
 
 IntegrationApp.displayName = 'IntegrationApp';
 
-const getElementValuePromise = (codename: string): Promise<Readonly<{ codename: string; value: string | null }>> =>
-  new Promise(resolve => {
-    CustomElement.getElementValue(codename, value => typeof value === "string" ? resolve({ codename, value }) : resolve({ codename, value: null }));
-  });
+
+//   new Promise(resolve => {
+//     CustomElement.getElementValue(codename, value => typeof value === "string" ? resolve({ codename, value }) : resolve({ codename, value: null }));
+//   });
