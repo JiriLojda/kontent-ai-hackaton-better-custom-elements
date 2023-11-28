@@ -4,6 +4,7 @@ declare global {
     setValue: (newValue: string | null | Readonly<{ value: string | null; searchableValue: string | null }>) => void;
     onDisabledChanged: (callback: (isDisabled: boolean) => void) => void;
     setHeight: (height: number) => void;
+    setWidth: (width: number) => void;
     getElementValue: (elementCodename: string, callback: (elementValue: string | ReadonlyArray<MultiChoiceOption>) => void) => void;
     observeElementChanges: (elementCodenames: ReadonlyArray<string>, callback: (changedElementCodenames: ReadonlyArray<string>) => void) => void;
     observeItemChanges: (callback: (newItemDetails: ItemChangedDetails) => void) => void;
