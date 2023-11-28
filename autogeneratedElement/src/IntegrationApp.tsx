@@ -1,6 +1,7 @@
 import { FC, useEffect, useState } from 'react';
 import { Button } from './Button';
 import { useConfig } from './ConfigContext';
+import { useAutoResize } from './useAutoResize';
 
 export const IntegrationApp: FC = () => {
   const config = useConfig();
@@ -8,6 +9,8 @@ export const IntegrationApp: FC = () => {
   const [elementValue, setElementValue] = useState<string | undefined>(config.initialValue);
   const [watchedUpdateIndex, setWatchedUpdateIndex] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
+
+  useAutoResize(elementValue);
 
   useEffect(() => {
     if (watchedUpdateIndex === 0) {
@@ -30,10 +33,6 @@ export const IntegrationApp: FC = () => {
   }, [config.config.elementCodenamesToInclude, config.config.instruction, watchedUpdateIndex]);
 
   useEffect(() => {
-    CustomElement.setHeight(500);
-  }, []);
-
-  useEffect(() => {
     CustomElement.onDisabledChanged(setIsDisabled);
   }, []);
 
@@ -50,7 +49,7 @@ export const IntegrationApp: FC = () => {
 
   return (
     <>
-      <main className="mt-10 flex justify-center items-center gap-5">
+      <main className="mt-5 flex justify-center items-center gap-5">
         {isLoading ? <Loader>"Waiting for AI..."</Loader> : null}
         {!elementValue && !isLoading && (
           <Button onClick={() => setWatchedUpdateIndex(prev => prev + 1)}>
