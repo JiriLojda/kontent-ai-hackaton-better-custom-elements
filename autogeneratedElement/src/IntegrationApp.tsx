@@ -6,7 +6,7 @@ export const IntegrationApp: FC = () => {
   const config = useConfig();
   const [, setIsDisabled] = useState(config.initialIsDisabled);
   const [elementValue, setElementValue] = useState<string | undefined>(config.initialValue);
-  const [, setWatchedElementsValues] = useState(Object.fromEntries(config.elementCodenamesToInclude.map(c => [c, ""])));
+  const [, setWatchedElementsValues] = useState(Object.fromEntries(config.config.elementCodenamesToInclude.map(c => [c, ""])));
 
   const updateWatchedElementsValue = useCallback((codenames: ReadonlyArray<string>) => {
     Promise.all(codenames.map(getElementValuePromise))
@@ -15,13 +15,13 @@ export const IntegrationApp: FC = () => {
 
   useEffect(() => {
     CustomElement.getAiHelp({
-      instruction: config.instruction,
+      instruction: config.config.instruction,
       options: {
-        includeElementCodenames: config.elementCodenamesToInclude,
+        includeElementCodenames: config.config.elementCodenamesToInclude,
       }
     })
       .then(res => setElementValue(res.result.value ?? res.result.error))
-  }, [config.elementCodenamesToInclude, config.instruction]);
+  }, [config.config.elementCodenamesToInclude, config.config.instruction]);
 
   useEffect(() => {
     CustomElement.setHeight(500);
@@ -35,7 +35,7 @@ export const IntegrationApp: FC = () => {
     if (!config) {
       return;
     }
-    CustomElement.observeElementChanges(config.elementCodenamesToInclude, updateWatchedElementsValue);
+    CustomElement.observeElementChanges(config.config.elementCodenamesToInclude, updateWatchedElementsValue);
   }, [config, updateWatchedElementsValue]);
 
   // const updateValue = (newValue: string) => {
