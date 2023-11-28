@@ -6,17 +6,18 @@ export const IntegrationApp: FC = () => {
   const [, setIsDisabled] = useState(config.initialIsDisabled);
   const [elementValue, setElementValue] = useState<string | undefined>(config.initialValue);
   const [watchedUpdateIndex, setWatchedUpdateIndex] = useState(0);
-
-  // const updateWatchedElementsValue = useCallback((codenames: ReadonlyArray<string>) => {
-  //   Promise.all(codenames.map(getElementValuePromise))
-  //     .then(newValues => setWatchedElementsValues(prev => ({ ...prev, ...Object.fromEntries(newValues.map(o => o.value === null ? null : [o.codename, o.value]).filter(notNull)) })));
-  // }, []);
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
+    if (watchedUpdateIndex === 0) {
+      return;
+    }
+
+    setIsLoading(true);
     CustomElement.ai(
       config.config.instruction,
       res => {
-        console.log("callback called in the custom element with: ", res);
+        setIsLoading(false);
         setElementValue(res.value ?? res.error);
       },
       {
@@ -50,18 +51,23 @@ export const IntegrationApp: FC = () => {
 
   return (
     <>
-      <h1>
-        This is the result:
-      </h1>
-      <div>
+      <main>
+        {isLoading ? <Loader>"Waiting for AI..."</Loader> : null}
         {elementValue}
-      </div>
+      </main>
     </>
   );
 };
 
 IntegrationApp.displayName = 'IntegrationApp';
 
+const Loader = (props: Readonly<{ children: string }>) => (
+  <div className="flex items-center justify-center w-56 h-56 border border-gray-200 rounded-lg bg-gray-50 dark:bg-gray-800 dark:border-gray-700">
+    <div className="px-3 py-1 text-xs font-medium leading-none text-center text-blue-800 bg-blue-200 rounded-full animate-pulse dark:bg-blue-900 dark:text-blue-200">
+      {props.children}
+    </div>
+  </div>
+);
 
 //   new Promise(resolve => {
 //     CustomElement.getElementValue(codename, value => typeof value === "string" ? resolve({ codename, value }) : resolve({ codename, value: null }));
