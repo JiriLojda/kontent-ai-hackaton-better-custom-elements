@@ -16,7 +16,10 @@ export const IntegrationApp: FC = () => {
   useEffect(() => {
     CustomElement.ai(
       config.config.instruction,
-      res => setElementValue(res.value ?? res.error),
+      res => {
+        console.log("callback called in the custom element with: ", res);
+        setElementValue(res.value ?? res.error);
+      },
       {
         includeElementCodenames: config.config.elementCodenamesToInclude,
       });
