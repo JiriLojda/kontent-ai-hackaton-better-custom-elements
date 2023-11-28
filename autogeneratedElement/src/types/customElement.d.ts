@@ -11,7 +11,7 @@ declare global {
     getAssetDetails: (assetIds: ReadonlyArray<string>) => Promise<ReadonlyArray<AssetDetail> | null>;
     selectItems: (config: Readonly<{ allowMultiple: boolean }>) => Promise<ReadonlyArray<IdReference> | null>;
     getItemDetails: (itemIds: ReadonlyArray<string>) => Promise<ReadonlyArray<ItemDetail> | null>;
-    getAiHelp: (requestData: IAiRequestMessageData) => Promise<IAiResponseMessageData>;
+    ai: (instruction: string, onResult: (result: CustomElementAiResult) => void, options?: CustomElementAiOptions) => void;
   };
 
   enum AiJob {

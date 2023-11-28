@@ -14,13 +14,12 @@ export const IntegrationApp: FC = () => {
   }, []);
 
   useEffect(() => {
-    CustomElement.getAiHelp({
-      instruction: config.config.instruction,
-      options: {
+    CustomElement.ai(
+      config.config.instruction,
+      res => setElementValue(res.value ?? res.error),
+      {
         includeElementCodenames: config.config.elementCodenamesToInclude,
-      }
-    })
-      .then(res => setElementValue(res.result.value ?? res.result.error))
+      });
   }, [config.config.elementCodenamesToInclude, config.config.instruction]);
 
   useEffect(() => {
