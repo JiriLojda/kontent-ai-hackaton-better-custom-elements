@@ -1,4 +1,5 @@
 import { FC, useEffect, useState } from 'react';
+import { Button } from './Button';
 import { useConfig } from './ConfigContext';
 
 export const IntegrationApp: FC = () => {
@@ -19,6 +20,9 @@ export const IntegrationApp: FC = () => {
       res => {
         setIsLoading(false);
         setElementValue(res.value ?? res.error);
+        if (res.value && !res.error) {
+          CustomElement.setValue(res.value);
+        }
       },
       {
         includeElementCodenames: config.config.elementCodenamesToInclude,
@@ -40,20 +44,20 @@ export const IntegrationApp: FC = () => {
     CustomElement.observeElementChanges(config.config.elementCodenamesToInclude, () => setWatchedUpdateIndex(prev => prev + 1));
   }, [config]);
 
-  // const updateValue = (newValue: string) => {
-  //   CustomElement.setValue(newValue);
-  //   setElementValue(newValue);
-  // };
-
   if (!config) {
     return null;
   }
 
   return (
     <>
-      <main>
+      <main className="mt-10 flex justify-center items-center gap-5">
         {isLoading ? <Loader>"Waiting for AI..."</Loader> : null}
-        {elementValue}
+        {!elementValue && !isLoading && (
+          <Button onClick={() => setWatchedUpdateIndex(prev => prev + 1)}>
+            Generate value
+          </Button>
+        )}
+        {!isLoading && elementValue}
       </main>
     </>
   );
@@ -62,13 +66,7 @@ export const IntegrationApp: FC = () => {
 IntegrationApp.displayName = 'IntegrationApp';
 
 const Loader = (props: Readonly<{ children: string }>) => (
-  <div className="flex items-center justify-center w-56 h-56 border border-gray-200 rounded-lg bg-gray-50 dark:bg-gray-800 dark:border-gray-700">
-    <div className="px-3 py-1 text-xs font-medium leading-none text-center text-blue-800 bg-blue-200 rounded-full animate-pulse dark:bg-blue-900 dark:text-blue-200">
-      {props.children}
-    </div>
+  <div className="px-5 py-2 text-xs font-medium leading-none text-center text-black bg-kontent-green rounded-full animate-pulse w-fit">
+    {props.children}
   </div>
 );
-
-//   new Promise(resolve => {
-//     CustomElement.getElementValue(codename, value => typeof value === "string" ? resolve({ codename, value }) : resolve({ codename, value: null }));
-//   });
