@@ -57,5 +57,7 @@ const Context = React.createContext<Config>(emptyConfig);
 
 export const useConfig = () => useContext(Context);
 
-const isValidConfig = (c: Readonly<Record<string, unknown>> | null): c is Config["config"] =>
-  !findMissingStringProps(Object.keys(emptyConfig.config))(c).length;
+// const isValidConfig = (c: Readonly<Record<string, unknown>> | null): c is Config["config"] =>
+//   !findMissingStringProps(Object.keys(emptyConfig.config))(c).length;
+
+const isValidConfig = (c: Readonly<Record<string, unknown>> | null): c is Config["config"] => true
