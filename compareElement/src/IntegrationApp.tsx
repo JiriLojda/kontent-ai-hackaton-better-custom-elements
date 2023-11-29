@@ -2,6 +2,7 @@ import { FC, ReactNode, useEffect, useLayoutEffect, useState } from 'react';
 import { useConfig } from './ConfigContext';
 import { useAutoResize } from './useAutoResize';
 import { ArrowDownIcon, ArrowLeftIcon, ArrowRightIcon, ArrowUpIcon } from "@heroicons/react/24/solid";
+import { debounce } from './utils/debounce';
 
 export const IntegrationApp: FC = () => {
   const config = useConfig();
@@ -46,8 +47,12 @@ export const IntegrationApp: FC = () => {
     if (!config) {
       return;
     }
-    CustomElement.observeThisElementChanges(() => setWatchIndex(prev => prev + 1));
-    CustomElement.observeElementChanges(config.config.compareWith, () => setWatchIndex(prev => prev + 1));
+    const debouncedUpdate = debounce(() => {
+      console.log("calling update");
+      return setWatchIndex(prev => prev + 1);
+    }, 2000);
+    CustomElement.observeThisElementChanges(debouncedUpdate);
+    CustomElement.observeElementChanges(config.config.compareWith, debouncedUpdate);
   }, [config]);
 
   if (!config) {
@@ -56,20 +61,6 @@ export const IntegrationApp: FC = () => {
 
   return (
     <>
-      <header className="flex gap-2 justify-end h-5">
-        <HeaderIcon onClick={() => setPlacement("left-side")}>
-          <ArrowLeftIcon />
-        </HeaderIcon>
-        <HeaderIcon onClick={() => setPlacement("right-side")}>
-          <ArrowRightIcon />
-        </HeaderIcon>
-        <HeaderIcon onClick={() => setPlacement("top-side")}>
-          <ArrowUpIcon />
-        </HeaderIcon>
-        <HeaderIcon onClick={() => setPlacement("bottom-side")}>
-          <ArrowDownIcon />
-        </HeaderIcon>
-      </header>
       <main className="mt-5 flex justify-center items-center gap-5">
         {isLoading ? <Loader>"Waiting for AI..."</Loader> : null}
         {!isLoading && elementValue}
@@ -82,15 +73,6 @@ IntegrationApp.displayName = 'IntegrationApp';
 
 const Loader = (props: Readonly<{ children: string }>) => (
   <div className="px-5 py-2 text-xs font-medium leading-none text-center text-black bg-kontent-green rounded-full animate-pulse w-fit">
-    {props.children}
-  </div>
-);
-
-const HeaderIcon = (props: Readonly<{ children: ReactNode; onClick: () => void }>) => (
-  <div
-    className="h-full p-0.5 border rounded border-kontent-orange text-kontent-orange w-5 cursor-pointer hover:bg-kontent-orange-light"
-    onClick={props.onClick}
-  >
     {props.children}
   </div>
 );

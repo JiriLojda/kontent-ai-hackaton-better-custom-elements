@@ -2,6 +2,7 @@ import { FC, ReactNode, useEffect, useLayoutEffect, useState } from 'react';
 import { useConfig } from './ConfigContext';
 import { useAutoResize } from './useAutoResize';
 import { ArrowDownIcon, ArrowLeftIcon, ArrowRightIcon, ArrowUpIcon } from "@heroicons/react/24/solid";
+import { debounce } from './utils/debounce';
 
 export const IntegrationApp: FC = () => {
   const config = useConfig();
@@ -47,7 +48,8 @@ export const IntegrationApp: FC = () => {
     if (!config) {
       return;
     }
-    CustomElement.observeThisElementChanges(() => CustomElement.getThisElementValue(setWatchedElementValue));
+    const debouncedUpdate = debounce(() => CustomElement.getThisElementValue(setWatchedElementValue), 1000);
+    CustomElement.observeThisElementChanges(debouncedUpdate);
   }, [config]);
 
   if (!config) {

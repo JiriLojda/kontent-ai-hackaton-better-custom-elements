@@ -2,6 +2,7 @@ import { FC, useEffect, useState } from 'react';
 import { Button } from './Button';
 import { useConfig } from './ConfigContext';
 import { useAutoResize } from './useAutoResize';
+import { debounce } from './utils/debounce';
 
 export const IntegrationApp: FC = () => {
   const config = useConfig();
@@ -40,7 +41,8 @@ export const IntegrationApp: FC = () => {
     if (!config) {
       return;
     }
-    CustomElement.observeElementChanges(config.config.elementCodenamesToInclude ?? [], () => setWatchedUpdateIndex(prev => prev + 1));
+    const debouncedUpdate = debounce(() => setWatchedUpdateIndex(prev => prev + 1), 1000);
+    CustomElement.observeElementChanges(config.config.elementCodenamesToInclude ?? [], debouncedUpdate);
   }, [config]);
 
   if (!config) {
