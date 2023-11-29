@@ -103,7 +103,7 @@ export const IntegrationApp: FC = () => {
                   {placements}
               </div>
             </header>
-        ) : (
+        ) : config.config.allowReposition && (
             <header className="flex gap-1 justify-end h-5">
                 {placements}
             </header>
