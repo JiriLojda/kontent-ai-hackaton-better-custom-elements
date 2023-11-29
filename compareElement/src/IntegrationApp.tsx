@@ -9,7 +9,7 @@ export const IntegrationApp: FC = () => {
   const [elementValue, setElementValue] = useState<string | undefined>(config.initialValue);
   const [isLoading, setIsLoading] = useState(false);
   const [placement, setPlacement] = useState(config.config.initialPlacement);
-  const [watchedElementValue, setWatchedElementValue] = useState<string | null>(null);
+  const [watchIndex, setWatchIndex] = useState(0);
 
   useAutoResize(elementValue);
 
@@ -36,7 +36,7 @@ export const IntegrationApp: FC = () => {
         includeElementCodenames: config.config.compareWith,
         includeThisElement: true,
       });
-  }, [config.config.instruction, watchedElementValue, config.config.compareWith]);
+  }, [config.config.instruction, watchIndex, config.config.compareWith]);
 
   useEffect(() => {
     CustomElement.onDisabledChanged(setIsDisabled);
@@ -46,7 +46,8 @@ export const IntegrationApp: FC = () => {
     if (!config) {
       return;
     }
-    CustomElement.observeThisElementChanges(() => CustomElement.getThisElementValue(setWatchedElementValue));
+    CustomElement.observeThisElementChanges(() => setWatchIndex(prev => prev + 1));
+    CustomElement.observeElementChanges(config.config.compareWith, () => setWatchIndex(prev => prev + 1));
   }, [config]);
 
   if (!config) {
