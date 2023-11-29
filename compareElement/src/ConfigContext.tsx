@@ -39,7 +39,8 @@ export type Config = Readonly<{
   config: Readonly<{
     instruction: string;
     initialPlacement?: CustomElementExtensionPlacement;
-    compareWith: ReadonlyArray<string>;
+    otherElementCodenamesToInclude: ReadonlyArray<string>;
+    allowReposition?: boolean;
   }>;
   initialValue: string;
   initialIsDisabled: boolean;
@@ -49,7 +50,7 @@ const emptyConfig: Config = {
   config: {
     instruction: "",
     initialPlacement: "right",
-    compareWith: [],
+    otherElementCodenamesToInclude: [],
   },
   initialValue: "",
   initialIsDisabled: false,
