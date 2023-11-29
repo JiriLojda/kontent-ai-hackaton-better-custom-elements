@@ -46,7 +46,7 @@ export const IntegrationApp: FC = () => {
         includeThisElement: !isGeneratingValue,
         job: config.config.job ?? 'analyze',
       });
-  }, [config.config.instruction, watchIndex, config.config.otherElementCodenamesToInclude]);
+  }, [config.config.instruction, config.config.job, isGeneratingValue, watchIndex, config.config.otherElementCodenamesToInclude]);
 
   useEffect(() => {
     CustomElement.onDisabledChanged(setIsDisabled);
@@ -68,7 +68,7 @@ export const IntegrationApp: FC = () => {
     if (config.config.otherElementCodenamesToInclude?.length) {
       CustomElement.observeElementChanges(config.config.otherElementCodenamesToInclude, debouncedUpdate);
     }
-  }, [config]);
+  }, [config, isGeneratingValue]);
 
   if (!config) {
     return null;
