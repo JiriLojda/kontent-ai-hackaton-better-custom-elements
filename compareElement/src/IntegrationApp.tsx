@@ -31,7 +31,7 @@ export const IntegrationApp: FC = () => {
         setElementValue(res.value ?? res.error);
       },
       {
-        includeElementCodenames: config.config.otherElementCodenamesToInclude,
+        includeElementCodenames: config.config.otherElementCodenamesToInclude ?? [],
         includeThisElement: true,
       });
   }, [config.config.instruction, watchIndex, config.config.otherElementCodenamesToInclude]);
@@ -50,7 +50,7 @@ export const IntegrationApp: FC = () => {
     }, 1000);
     CustomElement.observeThisElementChanges(debouncedUpdate);
 
-    if (config.config.otherElementCodenamesToInclude.length) {
+    if (config.config.otherElementCodenamesToInclude?.length) {
       CustomElement.observeElementChanges(config.config.otherElementCodenamesToInclude, debouncedUpdate);
     }
   }, [config]);
