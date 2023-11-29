@@ -39,6 +39,7 @@ export type Config = Readonly<{
   config: Readonly<{
     instruction: string;
     initialPlacement?: CustomElementExtensionPlacement;
+    job?: AiJob,
     otherElementCodenamesToInclude?: ReadonlyArray<string>;
     allowReposition?: boolean;
   }>;

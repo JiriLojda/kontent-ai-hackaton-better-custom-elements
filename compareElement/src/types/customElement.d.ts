@@ -40,11 +40,7 @@ declare global {
     'right-end';
 
 
-  enum AiJob {
-    GenerateValue = 'generate-value',
-    Analyze = 'analyze',
-  }
-
+  type AiJob = 'generate-value' | 'analyze';
 }
 
 export type CustomElementAiResult = {
@@ -57,7 +53,7 @@ export interface IAiResponseMessageData {
 }
 
 export type CustomElementAiOptions = {
-  readonly includeElementCodenames: ReadonlyArray<string>;
+  readonly includeElementCodenames?: ReadonlyArray<string>;
   readonly includeThisElement?: boolean;
   readonly job?: AiJob;
 };

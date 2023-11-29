@@ -7,12 +7,15 @@ import { debounce } from './utils/debounce';
 export const IntegrationApp: FC = () => {
   const config = useConfig();
   const [, setIsDisabled] = useState(config.initialIsDisabled);
-  const [elementValue, setElementValue] = useState<string | undefined>(config.initialValue);
+
+  const [value, setValue] = useState<string | undefined>(config.initialValue);
+  const [error, setError] = useState<string | undefined>(undefined);
+
   const [isLoading, setIsLoading] = useState(false);
   const [watchIndex, setWatchIndex] = useState(0);
   const [placement, setPlacement] = useState(config.config.initialPlacement);
 
-  useAutoResize(elementValue);
+  useAutoResize(value);
 
   useLayoutEffect(() => {
     if (!placement) {
@@ -22,17 +25,26 @@ export const IntegrationApp: FC = () => {
     CustomElement.setPlacement(placement);
   }, [placement]);
 
+  const isGeneratingValue = (config.config.job === 'generate-value');
+
   useEffect(() => {
     setIsLoading(true);
     CustomElement.ai(
       config.config.instruction,
       res => {
         setIsLoading(false);
-        setElementValue(res.value ?? res.error);
+
+        setValue(res.value);
+        setError(res.error);
+
+        if (!res.error && res.value && isGeneratingValue) {
+          CustomElement.setValue(res.value);
+        }
       },
       {
         includeElementCodenames: config.config.otherElementCodenamesToInclude ?? [],
-        includeThisElement: true,
+        includeThisElement: !isGeneratingValue,
+        job: config.config.job ?? 'analyze',
       });
   }, [config.config.instruction, watchIndex, config.config.otherElementCodenamesToInclude]);
 
@@ -48,7 +60,10 @@ export const IntegrationApp: FC = () => {
       console.log("calling update");
       return setWatchIndex(prev => prev + 1);
     }, 1000);
-    CustomElement.observeThisElementChanges(debouncedUpdate);
+
+    if (!isGeneratingValue) {
+      CustomElement.observeThisElementChanges(debouncedUpdate);
+    }
 
     if (config.config.otherElementCodenamesToInclude?.length) {
       CustomElement.observeElementChanges(config.config.otherElementCodenamesToInclude, debouncedUpdate);
@@ -79,7 +94,8 @@ export const IntegrationApp: FC = () => {
       )}
       <main className="mt-5 flex justify-center items-center gap-5">
         {isLoading ? <Loader>"Waiting for AI..."</Loader> : null}
-        {!isLoading && elementValue}
+        {!isLoading && (isGeneratingValue ? 'Done' : value)}
+        {!isLoading && error}
       </main>
     </>
   );
