@@ -1,7 +1,6 @@
-import { FC, ReactNode, useEffect, useLayoutEffect, useState } from 'react';
+import { FC, useEffect, useLayoutEffect, useState } from 'react';
 import { useConfig } from './ConfigContext';
 import { useAutoResize } from './useAutoResize';
-import { ArrowDownIcon, ArrowLeftIcon, ArrowRightIcon, ArrowUpIcon } from "@heroicons/react/24/solid";
 import { debounce } from './utils/debounce';
 
 export const IntegrationApp: FC = () => {
@@ -9,18 +8,13 @@ export const IntegrationApp: FC = () => {
   const [, setIsDisabled] = useState(config.initialIsDisabled);
   const [elementValue, setElementValue] = useState<string | undefined>(config.initialValue);
   const [isLoading, setIsLoading] = useState(false);
-  const [placement, setPlacement] = useState(config.config.initialPlacement);
   const [watchIndex, setWatchIndex] = useState(0);
 
   useAutoResize(elementValue);
 
   useLayoutEffect(() => {
-    if (!placement) {
-      return;
-    }
-
-    CustomElement.setPlacement(placement);
-  }, [placement]);
+    CustomElement.setPlacement(config.config.initialPlacement ?? "bottom-side");
+  }, [config.config.initialPlacement]);
 
   useEffect(() => {
     setIsLoading(true);
