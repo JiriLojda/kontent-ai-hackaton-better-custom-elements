@@ -23,7 +23,11 @@ export const IntegrationApp: FC = () => {
     }
 
     CustomElement.setPlacement(placement);
-  }, [placement]);
+
+    if (config.config.width) {
+        CustomElement.setWidth(config.config.width);
+    }
+  }, [placement, config.config.width]);
 
   const isGeneratingValue = (config.config.job === 'generate-value');
 

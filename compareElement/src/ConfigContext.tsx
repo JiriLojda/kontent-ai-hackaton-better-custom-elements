@@ -43,6 +43,7 @@ export type Config = Readonly<{
     otherElementCodenamesToInclude?: ReadonlyArray<string>;
     allowReposition?: boolean;
     title?: string,
+    width?: number,
   }>;
   initialValue: string;
   initialIsDisabled: boolean;
