@@ -42,6 +42,7 @@ export type Config = Readonly<{
     job?: AiJob,
     otherElementCodenamesToInclude?: ReadonlyArray<string>;
     allowReposition?: boolean;
+    title?: string,
   }>;
   initialValue: string;
   initialIsDisabled: boolean;

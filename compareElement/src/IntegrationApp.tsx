@@ -74,28 +74,44 @@ export const IntegrationApp: FC = () => {
     return null;
   }
 
+  const placements = (
+      <>
+        <HeaderIcon onClick={() => setPlacement("left")}>
+          <ArrowLeftIcon />
+        </HeaderIcon>
+        <HeaderIcon onClick={() => setPlacement("right")}>
+          <ArrowRightIcon />
+        </HeaderIcon>
+        <HeaderIcon onClick={() => setPlacement("top")}>
+          <ArrowUpIcon />
+        </HeaderIcon>
+        <HeaderIcon onClick={() => setPlacement("bottom")}>
+          <ArrowDownIcon />
+        </HeaderIcon>
+      </>
+  );
+
   return (
     <>
-      {config.config.allowReposition && (
-        <header className="flex gap-2 justify-end h-5">
-          <HeaderIcon onClick={() => setPlacement("left")}>
-            <ArrowLeftIcon />
-          </HeaderIcon>
-          <HeaderIcon onClick={() => setPlacement("right")}>
-            <ArrowRightIcon />
-          </HeaderIcon>
-          <HeaderIcon onClick={() => setPlacement("top")}>
-            <ArrowUpIcon />
-          </HeaderIcon>
-          <HeaderIcon onClick={() => setPlacement("bottom")}>
-            <ArrowDownIcon />
-          </HeaderIcon>
-        </header>
+      {(config.config.allowReposition || config.config.title) && (
+        config.config.title ? (
+            <header className="flex justify-between h-5">
+              {config.config.title && (
+                  <strong>{config.config.title}</strong>
+              )}
+              <div className="flex gap-1 justify-start">
+                  {placements}
+              </div>
+            </header>
+        ) : (
+            <header className="flex gap-1 justify-end h-5">
+                {placements}
+            </header>
+        )
       )}
       <main className="mt-5 flex justify-center items-center gap-5">
         {isLoading ? <Loader>"Waiting for AI..."</Loader> : null}
-        {!isLoading && (isGeneratingValue ? 'Done' : value)}
-        {!isLoading && error}
+        {!isLoading && (error ?? (isGeneratingValue ? 'Done' : value))}
       </main>
     </>
   );
