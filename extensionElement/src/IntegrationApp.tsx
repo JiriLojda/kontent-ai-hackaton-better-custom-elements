@@ -1,7 +1,7 @@
 import { FC, ReactNode, useEffect, useLayoutEffect, useState } from 'react';
 import { useConfig } from './ConfigContext';
 import { useAutoResize } from './useAutoResize';
-import { ArrowLeftIcon, ArrowRightIcon } from "@heroicons/react/24/solid";
+import { ArrowDownIcon, ArrowLeftIcon, ArrowRightIcon, ArrowUpIcon } from "@heroicons/react/24/solid";
 
 export const IntegrationApp: FC = () => {
   const config = useConfig();
@@ -56,12 +56,18 @@ export const IntegrationApp: FC = () => {
 
   return (
     <>
-      <header className="flex justify-end h-5 w-5">
+      <header className="flex gap-2 justify-end h-5">
         <HeaderIcon onClick={() => setPlacement("left")}>
           <ArrowLeftIcon />
         </HeaderIcon>
         <HeaderIcon onClick={() => setPlacement("right")}>
           <ArrowRightIcon />
+        </HeaderIcon>
+        <HeaderIcon onClick={() => setPlacement("top")}>
+          <ArrowUpIcon />
+        </HeaderIcon>
+        <HeaderIcon onClick={() => setPlacement("bottom")}>
+          <ArrowDownIcon />
         </HeaderIcon>
       </header>
       <main className="mt-5 flex justify-center items-center gap-5">
@@ -81,7 +87,10 @@ const Loader = (props: Readonly<{ children: string }>) => (
 );
 
 const HeaderIcon = (props: Readonly<{ children: ReactNode; onClick: () => void }>) => (
-  <div className="h-full border-2 rounded border-kontent-orange text-kontent-orange">
+  <div
+    className="h-full p-0.5 border rounded border-kontent-orange text-kontent-orange w-5 cursor-pointer hover:bg-kontent-orange-light"
+    onClick={props.onClick}
+  >
     {props.children}
   </div>
 );
