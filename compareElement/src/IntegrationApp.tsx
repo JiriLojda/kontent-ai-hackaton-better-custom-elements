@@ -114,14 +114,20 @@ export const IntegrationApp: FC = () => {
         )
       )}
       <main className="mt-5 flex justify-center items-center gap-5">
-        {isLoading ? <Loader>"Waiting for AI..."</Loader> : null}
-        {!isLoading && (error ?? (isGeneratingValue ? 'Done' : value))}
+        {isLoading ? <Loader>Updating value...</Loader> : null}
+          {!isLoading && (error ?? (isGeneratingValue ? <Status>Value updated</Status> : value))}
       </main>
     </>
   );
 };
 
 IntegrationApp.displayName = 'IntegrationApp';
+
+const Status = (props: Readonly<{ children: string }>) => (
+    <div className="px-5 py-2 text-xs font-medium leading-none text-center text-black bg-kontent-green rounded-full w-fit">
+        {props.children}
+    </div>
+);
 
 const Loader = (props: Readonly<{ children: string }>) => (
   <div className="px-5 py-2 text-xs font-medium leading-none text-center text-black bg-kontent-green rounded-full animate-pulse w-fit">
